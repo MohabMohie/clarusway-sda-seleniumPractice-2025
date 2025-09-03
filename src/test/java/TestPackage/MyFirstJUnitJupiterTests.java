@@ -1,6 +1,7 @@
 package TestPackage;
 
 import org.junit.jupiter.api.*;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
@@ -18,6 +19,7 @@ public class MyFirstJUnitJupiterTests {
         System.out.println("Title: " + actualTitle);
 
         Assertions.assertEquals("Google", actualTitle);
+        //TODO: discuss the limitations of assertions methods and other 3rd party alternatives
 //        driver.quit();
     }
 
@@ -38,8 +40,25 @@ public class MyFirstJUnitJupiterTests {
 //            driver.quit();
 //        }
 //        Assertions.assertEquals("GoogleX", actualTitle);
-        Assertions.assertNotEquals("Google", actualTitle);
+        Assertions.assertNotEquals("Google", actualTitle, "Checking the page title failed, actual title was Google.");
 //        driver.quit();
+    }
+
+    @Test
+    void checkPageUrlContainsAmazon(){
+        driver.get("https://www.amazon.com/");
+        String actualUrl = driver.getCurrentUrl();
+        System.out.println("Current URL: " + actualUrl);
+//        Assertions.assertTrue(actualUrl.toLowerCase().contains("Amazon".toLowerCase()));
+        Assertions.assertFalse(actualUrl.contains("dummy"));
+    }
+
+    @Test
+    void typeTextIntoInputField(){
+        driver.get("https://www.selenium.dev/selenium/web/web-form.html");
+        driver.findElement(By.id("my-text-id")).sendKeys("write some stuff");
+        // TODO: how do we test that locator to make sure that it is unique? and valid.
+        // TODO: discuss findElements
     }
 
 //    @BeforeAll
