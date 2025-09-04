@@ -3,7 +3,9 @@ package TestPackage;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.pagefactory.ByChained;
 
 public class MyFirstJUnitJupiterTests {
     WebDriver driver;
@@ -56,7 +58,52 @@ public class MyFirstJUnitJupiterTests {
     @Test
     void typeTextIntoInputField(){
         driver.get("https://www.selenium.dev/selenium/web/web-form.html");
+
+        // reusability, reliability, performance
+
+        // option #1 -> find the element and act on it in the same line of code
+        driver.findElement(By.id("my-text-id")).clear();
         driver.findElement(By.id("my-text-id")).sendKeys("write some stuff");
+        // eliminated due to lack of reusability
+
+        // option #2 -> find the element and store it in a variable then act on it
+        WebElement myTextElement = driver.findElement(By.id("my-text-id"));
+        myTextElement.clear();
+        myTextElement.sendKeys("write some stuff");
+        // satisfies reusability
+        // has better performance than option #3 (less webdriver calls, 3 commands instead of 4)
+        // can lead to StaleElementReferenceException, which impacts reliability
+
+        // option #3 -> store the locator in a variable then use it to find the element and act on it
+        By myTextLocator = By.id("my-text-id");
+        driver.findElement(myTextLocator).clear();
+        driver.findElement(myTextLocator).sendKeys("write some stuff");
+        // satisfies reusability, satisfies reliability, is less performant than both options.
+
+//        By form = By.id("login-form");
+//        By username = By.name("my-text");
+//        driver.findElement(form).findElement(username).sendKeys("write some stuff");
+//
+//        By username = new ByChained(By.id("login-form"), By.name("my-text"));
+//        driver.findElement(username).sendKeys("write some stuff");
+
+
+        By username = By.xpath("//*[@id='login-form']//*[@name='my-text']");
+        driver.findElement(username).sendKeys("write some stuff");
+
+
+        // performance category #1
+        By.id("my-text-id"); // 1
+//        By.className(""); // 3
+//        By.name(""); // 2
+        By.cssSelector("#my-text-id"); // 4
+
+        // performance category #2
+        By.xpath(""); // 8
+//        By.linkText(""); // 6
+//        By.partialLinkText(""); // 7
+//        By.tagName(""); // 5
+
         // TODO: how do we test that locator to make sure that it is unique? and valid.
         // TODO: discuss findElements
     }
